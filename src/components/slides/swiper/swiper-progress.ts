@@ -20,19 +20,21 @@ export function updateProgress(s: Slides, translate?: number) {
     s._isEnd = s.progress >= 1;
   }
 
-  if (s._isBeginning && !wasBeginning) {
-    s.ionSlideReachStart.emit();
-  }
+  s._zone.run(() => {
+    if (s._isBeginning && !wasBeginning) {
+      s.ionSlideReachStart.emit();
+    }
 
-  if (s._isEnd && !wasEnd) {
-    s.ionSlideReachEnd.emit();
-  }
+    if (s._isEnd && !wasEnd) {
+      s.ionSlideReachEnd.emit();
+    }
 
-  if (s.watchSlidesProgress) {
-    updateSlidesProgress(s, translate);
-  }
+    if (s.watchSlidesProgress) {
+      updateSlidesProgress(s, translate);
+    }
 
-  s.ionSlideProgress.emit(s.progress);
+    s.ionSlideProgress.emit(s.progress);
+  });
 }
 
 

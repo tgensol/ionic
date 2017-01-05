@@ -513,7 +513,7 @@ export class Animation {
     }
 
     // set the TRANSITION END event on one of the transition elements
-    self._unrgTrns = this.plt.transitionEnd(self._transEl(), onTransitionEnd);
+    self._unrgTrns = this.plt.transitionEnd(self._transEl(), onTransitionEnd, false);
 
     // set a fallback timeout if the transition end event never fires, or is too slow
     // transition end fallback: (animation duration + XXms)

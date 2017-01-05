@@ -667,7 +667,7 @@ export class Platform {
   /**
    * @private
    */
-  transitionEnd(el: HTMLElement, callback: {(ev?: TransitionEvent)}) {
+  transitionEnd(el: HTMLElement, callback: {(ev?: TransitionEvent)}, zone = true) {
     const unRegs: Function[] = [];
 
     function unregister() {
@@ -684,8 +684,8 @@ export class Platform {
     }
 
     if (el) {
-      this.registerListener(el, 'webkitTransitionEnd', <any>onTransitionEnd, { zone: false }, unRegs);
-      this.registerListener(el, 'transitionend', <any>onTransitionEnd, { zone: false }, unRegs);
+      this.registerListener(el, 'webkitTransitionEnd', <any>onTransitionEnd, { zone: zone }, unRegs);
+      this.registerListener(el, 'transitionend', <any>onTransitionEnd, { zone: zone }, unRegs);
     }
 
     return unregister;

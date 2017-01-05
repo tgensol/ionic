@@ -555,25 +555,28 @@ function onTouchEnd(s: Slides, plt: Platform, ev: SlideUIEvent) {
   // Tap, doubleTap, Click
   if (s._allowClick) {
     updateClickedSlide(s, plt, ev);
-    s.ionSlideTap.emit(s);
 
-    if (timeDiff < 300 && (touchEndTime - lastClickTime) > 300) {
-      if (clickTimeout) {
-        plt.cancelTimeout(clickTimeout);
+    s._zone.run(() => {
+      s.ionSlideTap.emit(s);
+
+      if (timeDiff < 300 && (touchEndTime - lastClickTime) > 300) {
+        if (clickTimeout) {
+          plt.cancelTimeout(clickTimeout);
+        }
+
+        clickTimeout = plt.timeout(() => {
+          if (!s) return;
+          if (s.paginationHide && s._paginationContainer && !(<HTMLElement>ev.target).classList.contains(CLS.bullet)) {
+            s._paginationContainer.classList.toggle(CLS.paginationHidden);
+          }
+        }, 300);
       }
 
-      clickTimeout = plt.timeout(() => {
-        if (!s) return;
-        if (s.paginationHide && s._paginationContainer && !(<HTMLElement>ev.target).classList.contains(CLS.bullet)) {
-          s._paginationContainer.classList.toggle(CLS.paginationHidden);
-        }
-      }, 300);
-    }
-
-    if (timeDiff < 300 && (touchEndTime - lastClickTime) < 300) {
-      if (clickTimeout) clearTimeout(clickTimeout);
-      s.ionSlideDoubleTap.emit(s);
-    }
+      if (timeDiff < 300 && (touchEndTime - lastClickTime) < 300) {
+        if (clickTimeout) clearTimeout(clickTimeout);
+        s.ionSlideDoubleTap.emit(s);
+      }
+    });
   }
 
   lastClickTime = Date.now();

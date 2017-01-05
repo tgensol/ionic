@@ -210,26 +210,28 @@ function autoplay(s: Slides, plt: Platform) {
   }
 
   s._autoplayTimeoutId = plt.timeout(() => {
-    if (s.loop) {
-      fixLoop(s, plt);
-      slideNext(s, plt, true, undefined, true);
-      s.ionSlideAutoplay.emit(s);
-
-    } else {
-      if (!s._isEnd) {
+    s._zone.run(() => {
+      if (s.loop) {
+        fixLoop(s, plt);
         slideNext(s, plt, true, undefined, true);
         s.ionSlideAutoplay.emit(s);
 
       } else {
-        if (!s.autoplayStopOnLast) {
-          slideTo(s, plt, 0);
+        if (!s._isEnd) {
+          slideNext(s, plt, true, undefined, true);
           s.ionSlideAutoplay.emit(s);
 
         } else {
-          stopAutoplay(s);
+          if (!s.autoplayStopOnLast) {
+            slideTo(s, plt, 0);
+            s.ionSlideAutoplay.emit(s);
+
+          } else {
+            stopAutoplay(s);
+          }
         }
       }
-    }
+    });
   }, autoplayDelay);
 }
 
@@ -241,7 +243,11 @@ export function startAutoplay(s: Slides, plt: Platform) {
   }
 
   s._autoplaying = true;
-  s.ionSlideAutoplayStart.emit(s);
+
+  s._zone.run(() => {
+    s.ionSlideAutoplayStart.emit(s);
+  });
+
   autoplay(s, plt);
 }
 
@@ -252,7 +258,9 @@ export function stopAutoplay(s: Slides) {
   s._autoplaying = false;
   s._autoplayTimeoutId = undefined;
 
-  s.ionSlideAutoplayStop.emit(s);
+  s._zone.run(() => {
+    s.ionSlideAutoplayStop.emit(s);
+  });
 }
 
 export function pauseAutoplay(s: Slides, plt: Platform, speed?: number) {
@@ -776,17 +784,19 @@ export function onTransitionStart(s: Slides, runCallbacks = true) {
   }
 
   if (runCallbacks) {
-    s.ionSlideTransitionStart.emit(s);
+    s._zone.run(() => {
+      s.ionSlideTransitionStart.emit(s);
 
-    if (s._activeIndex !== s._previousIndex) {
-      s.ionSlideWillChange.emit(s);
+      if (s._activeIndex !== s._previousIndex) {
+        s.ionSlideWillChange.emit(s);
 
-      if (s._activeIndex > s._previousIndex) {
-        s.ionSlideNextStart.emit(s);
-      } else {
-        s.ionSlidePrevStart.emit(s);
+        if (s._activeIndex > s._previousIndex) {
+          s.ionSlideNextStart.emit(s);
+        } else {
+          s.ionSlidePrevStart.emit(s);
+        }
       }
-    }
+    });
   }
 }
 
@@ -795,17 +805,19 @@ export function onTransitionEnd(s: Slides, plt: Platform, runCallbacks = true) {
   setWrapperTransition(s, plt, 0);
 
   if (runCallbacks) {
-    s.ionSlideTransitionEnd.emit(s);
+    s._zone.run(() => {
+      s.ionSlideTransitionEnd.emit(s);
 
-    if (s._activeIndex !== s._previousIndex) {
-      s.ionSlideDidChange.emit(s);
+      if (s._activeIndex !== s._previousIndex) {
+        s.ionSlideDidChange.emit(s);
 
-      if (s._activeIndex > s._previousIndex) {
-        s.ionSlideNextEnd.emit(s);
-      } else {
-        s.ionSlidePrevEnd.emit(s);
+        if (s._activeIndex > s._previousIndex) {
+          s.ionSlideNextEnd.emit(s);
+        } else {
+          s.ionSlidePrevEnd.emit(s);
+        }
       }
-    }
+    });
   }
 }
 
