@@ -8,6 +8,11 @@ import { DOCUMENT, BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platfor
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
+/**
+ * Import Deep Linker
+ */
+import { DeepLinkConfig } from './navigation/nav-util';
+
 
 /**
  * Import Providers
@@ -496,7 +501,7 @@ export class IonicModule {
      * @param {any} config Config Options for the app. Accepts any config property.
      * @param {any} deepLinkConfig Any configuration needed for the Ionic Deeplinker.
      */
-  static forRoot(appRoot: any, config: any = null, deepLinkConfig: any = null): ModuleWithProviders {
+  static forRoot(appRoot: any, config: any = null, deepLinkConfig: DeepLinkConfig = null): ModuleWithProviders {
     return {
       ngModule: IonicModule,
       providers: [
