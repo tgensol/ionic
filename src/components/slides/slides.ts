@@ -500,6 +500,7 @@ export class Slides extends Ion {
    * Deprecated: Use "ionSlideWillChange" instead.
    * Added 2016-12-29
    */
+  @Output()
   get ionWillChange() {
     console.warn('ion-slides "ionWillChange" has been deprecated, please use "ionSlideWillChange" instead.');
     return new EventEmitter();
@@ -507,7 +508,7 @@ export class Slides extends Ion {
 
   /**
    * @private
-   * Deprecated: Use "ionSlideWillChange" instead.
+   * Deprecated: Use "ionSlideDidChange" instead.
    * Added 2016-12-29
    */
   @Output()
@@ -518,9 +519,10 @@ export class Slides extends Ion {
 
   /**
    * @private
-   * Deprecated: Use "ionSlideWillChange" instead.
+   * Deprecated: Use "ionSlideDrag" instead.
    * Added 2016-12-29
    */
+  @Output()
   get ionDrag() {
     console.warn('ion-slides "ionDrag" has been deprecated, please use "ionSlideDrag" instead.');
     return new EventEmitter();
