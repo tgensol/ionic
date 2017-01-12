@@ -34,7 +34,7 @@ export class UrlSerializer {
     return parseUrlParts(browserUrl.split('/'), this.links);
   }
 
-  createSegmentFromName(nameOrComponent: any): NavSegment {
+  /*createSegmentFromName(nameOrComponent: any): NavSegment {
     const configLink = this.links.find((link: NavLink) => {
       return (link.component === nameOrComponent) ||
              (link.name === nameOrComponent) ||
@@ -48,7 +48,7 @@ export class UrlSerializer {
       data: null,
       defaultHistory: configLink.defaultHistory
     } : null;
-  }
+  }*/
 
   /**
    * Serialize a path, which is made up of multiple NavSegments,
@@ -100,7 +100,7 @@ export class UrlSerializer {
     return {
       id: urlParts.join('/'),
       name: configLink.name,
-      component: configLink.component,
+      //component: configLink.component,
       data: data,
       defaultHistory: configLink.defaultHistory
     };
@@ -150,7 +150,7 @@ export const parseUrlParts = (urlParts: string[], configLinks: NavLink[]): NavSe
         segments[i] = {
           id: urlParts[i],
           name: urlParts[i],
-          component: null,
+          //component: null,
           data: null
         };
       }
@@ -180,7 +180,7 @@ export const fillMatchedUrlParts = (segments: NavSegment[], urlParts: string[], 
       segments[i] = {
         id: matchedUrlParts.join('/'),
         name: configLink.name,
-        component: configLink.component,
+        //component: configLink.component,
         data: createMatchedData(matchedUrlParts, configLink),
         defaultHistory: configLink.defaultHistory
       };
@@ -212,7 +212,7 @@ export const createMatchedData = (matchedUrlParts: string[], link: NavLink): any
 };
 
 export const findLinkByComponentData = (links: NavLink[], component: any, instanceData: any): NavLink => {
-  let foundLink: NavLink = null;
+  /*let foundLink: NavLink = null;
   let foundLinkDataMatches = -1;
 
   for (var i = 0; i < links.length; i++) {
@@ -244,6 +244,8 @@ export const findLinkByComponentData = (links: NavLink[], component: any, instan
   }
 
   return foundLink;
+  */
+  return null;
 };
 
 export const normalizeLinks = (links: NavLink[]): NavLink[] => {
@@ -314,6 +316,6 @@ const URL_REPLACE_REG = /\s+|\?|\!|\$|\,|\.|\+|\"|\'|\*|\^|\||\/|\\|\[|\]|#|%|`|
  */
 export const DeepLinkConfigToken = new OpaqueToken('USERLINKS');
 
-export function setupUrlSerializer(userDeepLinkConfig: any): UrlSerializer {
+export function setupUrlSerializer(userDeepLinkConfig: DeepLinkConfig): UrlSerializer {
   return new UrlSerializer(userDeepLinkConfig);
 }

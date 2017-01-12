@@ -71,10 +71,13 @@ export class NavPush {
  */
   @HostListener('click')
   onClick(): boolean {
-    if (this._nav && this.navPush) {
+    /*if (this._nav && this.navPush) {
       this._nav.push(this.navPush, this.navParams, null);
       return false;
     }
+    return true;
+    */
+    console.log('onClick stub');
     return true;
   }
 
@@ -98,12 +101,14 @@ export class NavPushAnchor implements AfterContentInit {
     @Optional() public linker: DeepLinker) {}
 
   updateHref() {
-    if (this.host && this.linker) {
+    /*if (this.host && this.linker) {
       this._href = this.linker.createUrl(this.host._nav, this.host.navPush, this.host.navParams) || '#';
 
     } else {
       this._href = '#';
     }
+    */
+    console.log('updateHref stub');
   }
 
   ngAfterContentInit() {

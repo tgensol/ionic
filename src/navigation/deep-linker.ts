@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 
 import { App } from '../components/app/app';
-import { convertToViews, isNav, isTab, isTabs, NavSegment, DIRECTION_BACK } from './nav-util';
+import { DeepLinkConfig, isNav, isTab, isTabs, NavSegment, DIRECTION_BACK } from './nav-util';
 import { isArray, isPresent } from '../util/util';
 import { Nav } from '../components/nav/nav';
 import { NavController } from './nav-controller';
@@ -9,6 +9,8 @@ import { Tab } from '../components/tabs/tab';
 import { Tabs } from '../components/tabs/tabs';
 import { UrlSerializer } from './url-serializer';
 import { ViewController } from './view-controller';
+
+import { ModuleLoader } from '../util/module-loader';
 
 /**
  * @name DeepLinker
@@ -130,7 +132,7 @@ export class DeepLinker {
    */
   indexAliasUrl: string;
 
-  constructor(public _app: App, public _serializer: UrlSerializer, public _location: Location) { }
+  constructor(public _app: App, public _serializer: UrlSerializer, public _location: Location, public _deepLinkConfig: DeepLinkConfig, public _moduleLoader: ModuleLoader) { }
 
   /**
    * @internal
@@ -208,7 +210,7 @@ export class DeepLinker {
    * Update the deep linker using the NavController's current active view.
    * @internal
    */
-  navChange(direction: string) {
+  /*navChange(direction: string) {
     // all transitions completed
     if (direction) {
       // get the app's active nav, which is the lowest level one being viewed
@@ -226,6 +228,7 @@ export class DeepLinker {
       }
     }
   }
+  */
 
   /**
    * @internal
@@ -253,18 +256,19 @@ export class DeepLinker {
   /**
    * @internal
    */
-  getComponentFromName(componentName: any): any {
+  /*getComponentFromName(componentName: any): any {
     const segment = this._serializer.createSegmentFromName(componentName);
     if (segment && segment.component) {
       return segment.component;
     }
     return null;
   }
+  */
 
   /**
    * @internal
    */
-  createUrl(nav: any, nameOrComponent: any, data: any, prepareExternalUrl: boolean = true): string {
+  /*createUrl(nav: any, nameOrComponent: any, data: any, prepareExternalUrl: boolean = true): string {
     // create a segment out of just the passed in name
     const segment = this._serializer.createSegmentFromName(nameOrComponent);
     if (segment) {
@@ -276,6 +280,7 @@ export class DeepLinker {
     }
     return '';
   }
+  */
 
   /**
    * Build a browser URL out of this NavController. Climbs up the tree
@@ -284,7 +289,7 @@ export class DeepLinker {
    *
    * @internal
    */
-  pathFromNavs(nav: NavController, component?: any, data?: any): NavSegment[] {
+  /*pathFromNavs(nav: NavController, component?: any, data?: any): NavSegment[] {
     const segments: NavSegment[] = [];
     let view: ViewController;
     let segment: NavSegment;
@@ -343,6 +348,7 @@ export class DeepLinker {
     // segments added from bottom to top, so Ti esrever dna ti pilf
     return segments.reverse();
   }
+  */
 
   /**
    * @internal
@@ -408,8 +414,8 @@ export class DeepLinker {
   /**
    * @internal
    */
-  initViews(segment: NavSegment): ViewController[] {
-    let views: ViewController[];
+  //initViews(segment: NavSegment): ViewController[] {
+    /*let views: ViewController[];
 
     if (isArray(segment.defaultHistory)) {
       views = convertToViews(this, segment.defaultHistory);
@@ -424,7 +430,8 @@ export class DeepLinker {
     views.push(view);
 
     return views;
-  }
+    */
+  //}
 
   /**
    * Using the known Path of Segments, walk down all descendents
@@ -451,8 +458,10 @@ export class DeepLinker {
    * @internal
    */
   loadViewFromSegment(navInstance: any, done: Function) {
+    console.log('loadViewFromSegment: ', navInstance);
+    done();
     // load up which nav ids belong to its nav segment
-    let segment = this.initNav(navInstance);
+    /*let segment = this.initNav(navInstance);
     if (!segment) {
       done();
       return;
@@ -504,6 +513,7 @@ export class DeepLinker {
     nav.push(segment.component, segment.data, {
       id: segment.id, animate: false, updateUrl: false
     }, done);
+    */
   }
 
   /**
@@ -545,8 +555,8 @@ export class DeepLinker {
 }
 
 
-export function setupDeepLinker(app: App, serializer: UrlSerializer, location: Location) {
-  const deepLinker = new DeepLinker(app, serializer, location);
+export function setupDeepLinker(app: App, serializer: UrlSerializer, location: Location, deepLinkConfig: DeepLinkConfig, moduleLoader: ModuleLoader) {
+  const deepLinker = new DeepLinker(app, serializer, location, deepLinkConfig, moduleLoader);
   deepLinker.init();
   return deepLinker;
 }

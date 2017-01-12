@@ -7,7 +7,7 @@ import { Ion } from '../ion';
 import { isBlank } from '../../util/util';
 import { NavController } from '../../navigation/nav-controller';
 import { NavControllerBase } from '../../navigation/nav-controller-base';
-import { getComponent, NavOptions, DIRECTION_SWITCH } from '../../navigation/nav-util';
+import { NavOptions, DIRECTION_SWITCH } from '../../navigation/nav-util';
 import { Platform } from '../../platform/platform';
 import { Tab } from './tab';
 import { TabHighlight } from './tab-highlight';
@@ -306,7 +306,7 @@ export class Tabs extends Ion implements AfterViewInit {
   initTabs() {
     // get the selected index from the input
     // otherwise default it to use the first index
-    let selectedIndex = (isBlank(this.selectedIndex) ? 0 : parseInt(<any>this.selectedIndex, 10));
+    /*let selectedIndex = (isBlank(this.selectedIndex) ? 0 : parseInt(<any>this.selectedIndex, 10));
 
     // now see if the deep linker can find a tab index
     const tabsSegment = this._linker.initNav(this);
@@ -344,6 +344,8 @@ export class Tabs extends Ion implements AfterViewInit {
     this._tabs.forEach(t => {
       t.updateHref(t.root, t.rootParams);
     });
+    */
+    console.log('initTabs stub');
   }
 
   /**
@@ -408,9 +410,10 @@ export class Tabs extends Ion implements AfterViewInit {
           this._highlight.select(selectedTab);
         }
 
-        if (opts.updateUrl !== false) {
+        /*if (opts.updateUrl !== false) {
           this._linker.navChange(DIRECTION_SWITCH);
         }
+        */
       }
 
       selectedPage && selectedPage._didEnter();
@@ -503,11 +506,12 @@ export class Tabs extends Ion implements AfterViewInit {
         // if we're a few pages deep, pop to root
         tab.popToRoot();
 
-      } else if (getComponent(this._linker, tab.root) !== active.component) {
+    } /*else if (getComponent(this._linker, tab.root) !== active.component) {
         // Otherwise, if the page we're on is not our real root, reset it to our
         // default root type
         tab.setRoot(tab.root);
       }
+      */
     }
   }
 

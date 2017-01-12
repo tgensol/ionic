@@ -2,7 +2,7 @@
 /**
  * Import Angular
  */
-import { ANALYZE_FOR_ENTRY_COMPONENTS, APP_INITIALIZER, Inject, ModuleWithProviders, NgModule, NgZone, Optional } from '@angular/core';
+import { ANALYZE_FOR_ENTRY_COMPONENTS, APP_INITIALIZER, Inject, ModuleWithProviders, NgModule, NgModuleFactoryLoader, NgZone, Optional, SystemJsNgModuleLoader } from '@angular/core';
 import { APP_BASE_HREF, Location, LocationStrategy, HashLocationStrategy, PathLocationStrategy, PlatformLocation } from '@angular/common';
 import { DOCUMENT, BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -33,6 +33,7 @@ import { Keyboard } from './platform/keyboard';
 import { LoadingController } from './components/loading/loading';
 import { MenuController } from './components/menu/menu-controller';
 import { ModalController } from './components/modal/modal';
+import { ModuleLoader } from './util/module-loader';
 import { PickerController } from './components/picker/picker';
 import { Platform, setupPlatform } from './platform/platform';
 import { PlatformConfigToken, providePlatformConfigs } from './platform/platform-registry';
@@ -216,6 +217,7 @@ export { DomController, DomCallback } from './platform/dom-controller';
 export { Platform, setupPlatform } from './platform/platform';
 export { Haptic } from './tap-click/haptic';
 export { DeepLinker } from './navigation/deep-linker';
+export { ModuleLoader } from './util/module-loader';
 export { NavController } from './navigation/nav-controller';
 export { NavControllerBase } from './navigation/nav-controller-base';
 export { NavParams } from './navigation/nav-params';
@@ -495,6 +497,52 @@ export { Transition } from './transitions/transition';
   ]
 })
 export class IonicModule {
+
+  static getShared(): ModuleWithProviders {
+    return  {
+      ngModule: IonicModule,
+      providers: [
+        // useFactory: user values
+        { provide: PlatformConfigToken, useFactory: providePlatformConfigs },
+
+        // useFactory: ionic core providers
+        { provide: Platform, useFactory: setupPlatform, deps: [ DOCUMENT, PlatformConfigToken, NgZone ] },
+        { provide: Config, useFactory: setupConfig, deps: [ ConfigToken, Platform ] },
+
+        // useFactory: ionic app initializers
+        { provide: APP_INITIALIZER, useFactory: registerModeConfigs, deps: [ Config ], multi: true },
+        { provide: APP_INITIALIZER, useFactory: registerTransitions, deps: [ Config ], multi: true },
+        { provide: APP_INITIALIZER, useFactory: setupProvideEvents, deps: [ Platform, DomController ], multi: true },
+        { provide: APP_INITIALIZER, useFactory: setupTapClick, deps: [ Config, Platform, DomController, App, NgZone, GestureController ], multi: true },
+
+        // useClass
+        { provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig },
+
+        // system js loader
+        {provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader},
+
+        // ionic providers
+        ActionSheetController,
+        AlertController,
+        App,
+        DomController,
+        Events,
+        Form,
+        GestureController,
+        Haptic,
+        Keyboard,
+        LoadingController,
+        Location,
+        MenuController,
+        ModalController,
+        PickerController,
+        PopoverController,
+        TapClick,
+        ToastController,
+        TransitionController,
+      ]
+    }
+  }
     /**
      * Set the root app component for you IonicModule
      * @param {any} appRoot The root AppComponent for this app.
@@ -529,6 +577,9 @@ export class IonicModule {
         // useValue
         { provide: ANALYZE_FOR_ENTRY_COMPONENTS, useValue: appRoot, multi: true },
 
+        // system js loader
+        {provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader},
+
         // ionic providers
         ActionSheetController,
         AlertController,
@@ -549,13 +600,19 @@ export class IonicModule {
         ToastController,
         TransitionController,
 
+        { provide: ModuleLoader, useFactory: provideModuleLoader, deps: [DeepLinkConfigToken, NgModuleFactoryLoader]},
         { provide: LocationStrategy, useFactory: provideLocationStrategy, deps: [ PlatformLocation, [ new Inject(APP_BASE_HREF), new Optional()], Config ] },
         { provide: UrlSerializer, useFactory: setupUrlSerializer, deps: [ DeepLinkConfigToken ] },
-        { provide: DeepLinker, useFactory: setupDeepLinker, deps: [ App, UrlSerializer, Location ] },
+        { provide: DeepLinker, useFactory: setupDeepLinker, deps: [ App, UrlSerializer, Location, DeepLinkConfigToken, ModuleLoader] },
       ]
     };
   }
 
+}
+
+export function provideModuleLoader(deepLinkConfig: DeepLinkConfig, ngModuleLoader: NgModuleFactoryLoader) {
+  console.log('deepLinkConfig: ', deepLinkConfig);
+  return new ModuleLoader(deepLinkConfig, ngModuleLoader);
 }
 
 /**

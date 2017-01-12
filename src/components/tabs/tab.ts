@@ -15,6 +15,8 @@ import { Tabs } from './tabs';
 import { TransitionController } from '../../transitions/transition-controller';
 import { ViewController } from '../../navigation/view-controller';
 
+import { ModuleLoader } from '../../util/module-loader';
+
 /**
  * @name Tab
  * @description
@@ -276,9 +278,10 @@ export class Tab extends NavControllerBase {
     transCtrl: TransitionController,
     @Optional() private linker: DeepLinker,
     private _dom: DomController,
+    moduleLoader: ModuleLoader
   ) {
     // A Tab is a NavController for its child pages
-    super(parent, app, config, plt, keyboard, elementRef, zone, renderer, cfr, gestureCtrl, transCtrl, linker, _dom);
+    super(parent, app, config, plt, keyboard, elementRef, zone, renderer, cfr, gestureCtrl, transCtrl, linker, _dom, moduleLoader);
 
     this.id = parent.add(this);
     this._tabsHideOnSubPages = config.getBoolean('tabsHideOnSubPages');
@@ -377,10 +380,12 @@ export class Tab extends NavControllerBase {
    * @private
    */
   updateHref(component: any, data: any) {
-    if (this.btn && this.linker) {
+    console.log('updateHref stubbed');
+    /*if (this.btn && this.linker) {
       let href = this.linker.createUrl(this, component, data) || '#';
       this.btn.updateHref(href);
     }
+    */
   }
 
   /**

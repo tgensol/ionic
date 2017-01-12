@@ -411,7 +411,7 @@ export abstract class NavController {
    * @param {object} [opts={}] Nav options to go with this transition.
    * @returns {Promise} Returns a promise which is resolved when the transition has completed.
    */
-  abstract push(page: any, params?: any, opts?: NavOptions, done?: Function): Promise<any>;
+  abstract push(pageName: string, params?: any, opts?: NavOptions, done?: Function): Promise<any>;
 
   /**
    * Inserts a component into the nav stack at the specified index. This is useful if
@@ -424,7 +424,7 @@ export abstract class NavController {
    * @param {object} [opts={}] Nav options to go with this transition.
    * @returns {Promise} Returns a promise which is resolved when the transition has completed.
    */
-  abstract insert(insertIndex: number, page: any, params?: any, opts?: NavOptions, done?: Function): Promise<any>;
+  abstract insert(insertIndex: number, pageName: string, params?: any, opts?: NavOptions, done?: Function): Promise<any>;
 
   /**
    * Inserts an array of components into the nav stack at the specified index.
@@ -436,7 +436,7 @@ export abstract class NavController {
    * @param {object} [opts={}] Nav options to go with this transition.
    * @returns {Promise} Returns a promise which is resolved when the transition has completed.
    */
-  abstract insertPages(insertIndex: number, insertPages: Array<{page: any, params?: any}>, opts?: NavOptions, done?: Function): Promise<any>;
+  abstract insertPages(insertIndex: number, insertPageNames: Array<{pageName: string, params?: any}>, opts?: NavOptions, done?: Function): Promise<any>;
 
   /**
    * Call to navigate back from a current component. Similar to `push()`, you
@@ -470,7 +470,7 @@ export abstract class NavController {
    * @param {object} [opts={}] Nav options to go with this transition.
    * @returns {Promise} Returns a promise which is resolved when the transition has completed.
    */
-  abstract popTo(page: any, params?: any, opts?: NavOptions, done?: Function): Promise<any>;
+  abstract popTo(pageName: string, params?: any, opts?: NavOptions, done?: Function): Promise<any>;
 
   /**
    * @private
@@ -506,7 +506,7 @@ export abstract class NavController {
    * @param {object} [opts={}] Any options you want to use pass to transtion.
    * @returns {Promise} Returns a promise which is resolved when the transition has completed.
    */
-  abstract setRoot(pageOrViewCtrl: any, params?: any, opts?: NavOptions, done?: Function): Promise<any>;
+  abstract setRoot(pageName: string, params?: any, opts?: NavOptions, done?: Function): Promise<any>;
 
   /**
    * Set the views of the current navigation stack and navigate to the
@@ -518,7 +518,7 @@ export abstract class NavController {
    * @param {object} [opts={}] Nav options to go with this transition.
    * @returns {Promise} Returns a promise which is resolved when the transition has completed.
    */
-  abstract setPages(pages: any[], opts?: NavOptions, done?: Function): Promise<any>;
+  abstract setPages(pageNames: string[], opts?: NavOptions, done?: Function): Promise<any>;
 
   /**
    * @param {number} index  The index of the page to get.

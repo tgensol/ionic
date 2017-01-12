@@ -14,6 +14,8 @@ import { Platform } from '../../platform/platform';
 import { TransitionController } from '../../transitions/transition-controller';
 import { ViewController } from '../../navigation/view-controller';
 
+import { ModuleLoader } from '../../util/module-loader';
+
 /**
  * @name Nav
  * @description
@@ -72,8 +74,9 @@ export class Nav extends NavControllerBase implements AfterViewInit {
     transCtrl: TransitionController,
     @Optional() linker: DeepLinker,
     domCtrl: DomController,
+    moduleLoader: ModuleLoader
   ) {
-    super(parent, app, config, plt, keyboard, elementRef, zone, renderer, cfr, gestureCtrl, transCtrl, linker, domCtrl);
+    super(parent, app, config, plt, keyboard, elementRef, zone, renderer, cfr, gestureCtrl, transCtrl, linker, domCtrl, moduleLoader);
 
     if (viewCtrl) {
       // an ion-nav can also act as an ion-page within a parent ion-nav
@@ -109,11 +112,12 @@ export class Nav extends NavControllerBase implements AfterViewInit {
     this._hasInit = true;
 
     let navSegment = this._linker.initNav(this);
-    if (navSegment && navSegment.component) {
+    /*if (navSegment && navSegment.component) {
       // there is a segment match in the linker
       this.setPages(this._linker.initViews(navSegment), null, null);
 
-    } else if (this._root) {
+    }
+    else */if (this._root) {
       // no segment match, so use the root property
       this.push(this._root, this.rootParams, {
         isNavRoot: (<any>this._app.getRootNav() === this)

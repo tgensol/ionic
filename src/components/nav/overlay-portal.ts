@@ -10,6 +10,8 @@ import { NavControllerBase } from '../../navigation/nav-controller-base';
 import { Platform } from '../../platform/platform';
 import { TransitionController } from '../../transitions/transition-controller';
 
+import { ModuleLoader } from '../../util/module-loader';
+
 /**
  * @private
  */
@@ -31,8 +33,9 @@ export class OverlayPortal extends NavControllerBase {
     @Optional() linker: DeepLinker,
     viewPort: ViewContainerRef,
     domCtrl: DomController,
+    moduleLoader: ModuleLoader
   ) {
-    super(null, app, config, plt, keyboard, elementRef, zone, renderer, cfr, gestureCtrl, transCtrl, linker, domCtrl);
+    super(null, app, config, plt, keyboard, elementRef, zone, renderer, cfr, gestureCtrl, transCtrl, linker, domCtrl, moduleLoader);
     this._isPortal = true;
     this._init = true;
     this.setViewport(viewPort);

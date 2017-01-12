@@ -11,9 +11,10 @@ export function getComponent(linker: DeepLinker, nameOrPageOrView: any): any {
   if (typeof nameOrPageOrView === 'function') {
     return nameOrPageOrView;
   }
-  if (typeof nameOrPageOrView === 'string') {
+  /*if (typeof nameOrPageOrView === 'string') {
     return linker.getComponentFromName(nameOrPageOrView);
   }
+  */
   return null;
 }
 
@@ -32,7 +33,7 @@ export function convertToView(linker: DeepLinker, nameOrPageOrView: any, params:
   return null;
 }
 
-export function convertToViews(linker: DeepLinker, pages: any[]): ViewController[] {
+/*export function convertToViews(linker: DeepLinker, pages: any[]): ViewController[] {
   const views: ViewController[] = [];
   if (isArray(pages)) {
     for (var i = 0; i < pages.length; i++) {
@@ -52,6 +53,7 @@ export function convertToViews(linker: DeepLinker, pages: any[]): ViewController
   }
   return views;
 }
+*/
 
 let portalZindex = 9999;
 
@@ -105,7 +107,8 @@ export interface DeepLinkMetadataType {
  * @private
  */
 export class DeepLinkMetadata implements DeepLinkMetadataType {
-  component: any;
+  path: string;
+  namedExport: string;
   name: string;
   segment?: string;
   defaultHistory?: any[];
@@ -132,7 +135,8 @@ export interface DeepLinkConfig {
 
 // internal link interface, not exposed publicly
 export interface NavLink {
-  component: any;
+  path?: string;
+  namedExport?: string;
   name?: string;
   segment?: string;
   parts?: string[];
@@ -146,7 +150,6 @@ export interface NavLink {
 export interface NavSegment {
   id: string;
   name: string;
-  component: any;
   data: any;
   navId?: string;
   defaultHistory?: NavSegment[];

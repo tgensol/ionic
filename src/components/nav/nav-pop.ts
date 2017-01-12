@@ -72,13 +72,15 @@ export class NavPopAnchor implements AfterContentInit {
     @Optional() public viewCtrl: ViewController) {}
 
   updateHref() {
-    if (this.host && this.viewCtrl) {
+    /*if (this.host && this.viewCtrl) {
       const previousView = this.host._nav.getPrevious(this.viewCtrl);
       this._href = (previousView && this.linker.createUrl(this.host._nav, this.viewCtrl.component, this.viewCtrl.data)) || '#';
 
     } else {
       this._href = '#';
     }
+    */
+    console.log('updateHref stub');
   }
 
   ngAfterContentInit() {

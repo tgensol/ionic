@@ -1,18 +1,18 @@
-import { ComponentRef, ComponentFactoryResolver, ElementRef, EventEmitter, NgZone, ReflectiveInjector, Renderer, ViewContainerRef } from '@angular/core';
+import { ComponentRef, ComponentFactoryResolver, ElementRef, EventEmitter, NgModuleFactory, NgZone, ReflectiveInjector, Renderer, ViewContainerRef } from '@angular/core';
 
 import { AnimationOptions } from '../animations/animation';
 import { App } from '../components/app/app';
 import { Config } from '../config/config';
-import { convertToView, convertToViews, NavOptions, DIRECTION_BACK, DIRECTION_FORWARD, INIT_ZINDEX,
-         TransitionResolveFn, TransitionInstruction, ViewState } from './nav-util';
-import { setZIndex } from './nav-util';
+import { convertToView, DIRECTION_BACK, DIRECTION_FORWARD, INIT_ZINDEX, NavOptions,
+         setZIndex, TransitionResolveFn, TransitionInstruction, ViewState } from './nav-util';
 import { DeepLinker } from './deep-linker';
 import { DomController } from '../platform/dom-controller';
 import { GestureController } from '../gestures/gesture-controller';
-import { isBlank, isNumber, isPresent, assert, removeArrayItem } from '../util/util';
+import { isBlank, isNumber, isPresent, isString, assert, removeArrayItem } from '../util/util';
 import { isViewController, ViewController } from './view-controller';
 import { Ion } from '../components/ion';
 import { Keyboard } from '../platform/keyboard';
+import { ModuleLoader } from '../util/module-loader';
 import { NavController } from './nav-controller';
 import { NavParams } from './nav-params';
 import { Platform } from '../platform/platform';
@@ -62,7 +62,8 @@ export class NavControllerBase extends Ion implements NavController {
     public _gestureCtrl: GestureController,
     public _trnsCtrl: TransitionController,
     public _linker: DeepLinker,
-    private _domCtrl: DomController
+    private _domCtrl: DomController,
+    private moduleLoader: ModuleLoader
   ) {
     super(config, elementRef, renderer);
 
@@ -71,28 +72,44 @@ export class NavControllerBase extends Ion implements NavController {
     this.id = 'n' + (++ctrlIds);
   }
 
-  push(page: any, params?: any, opts?: NavOptions, done?: Function): Promise<any> {
-    return this._queueTrns({
-      insertStart: -1,
-      insertViews: [convertToView(this._linker, page, params)],
-      opts: opts,
-    }, done);
+  push(pageOrPageName: string | any, params?: any, opts?: NavOptions, done?: Function): Promise<any> {
+    /*
+    */
+
+    if (isString(pageOrPageName)) {
+      return this.moduleLoader.loadModule(pageOrPageName as string)
+        .then((moduleFactory: NgModuleFactory<any>) => {
+          console.log('moduleFactory: ', moduleFactory);
+        });
+    } else {
+      return this._queueTrns({
+        insertStart: -1,
+        insertViews: [convertToView(this._linker, pageOrPageName, params)],
+        opts: opts,
+      }, done);
+    }
   }
 
-  insert(insertIndex: number, page: any, params?: any, opts?: NavOptions, done?: Function): Promise<any> {
+  insert(insertIndex: number, pageName: string, params?: any, opts?: NavOptions, done?: Function): Promise<any> {
+    /*
     return this._queueTrns({
       insertStart: insertIndex,
       insertViews: [convertToView(this._linker, page, params)],
       opts: opts,
     }, done);
+    */
+
+    return Promise.reject(new Error('Need to implement'));
   }
 
-  insertPages(insertIndex: number, insertPages: any[], opts?: NavOptions, done?: Function): Promise<any> {
-    return this._queueTrns({
+  insertPages(insertIndex: number, insertPageNames: Array<{pageName: string, params?: any}>, opts?: NavOptions, done?: Function): Promise<any> {
+    /*return this._queueTrns({
       insertStart: insertIndex,
       insertViews: convertToViews(this._linker, insertPages),
       opts: opts,
     }, done);
+    */
+    return Promise.reject(new Error('Need to implement'));
   }
 
   pop(opts?: NavOptions, done?: Function): Promise<any> {
@@ -152,13 +169,16 @@ export class NavControllerBase extends Ion implements NavController {
   }
 
   setRoot(pageOrViewCtrl: any, params?: any, opts?: NavOptions, done?: Function): Promise<any> {
-    const viewControllers = [convertToView(this._linker, pageOrViewCtrl, params)];
-    return this._setPages(viewControllers, opts, done);
+    //const viewControllers = [convertToView(this._linker, pageOrViewCtrl, params)];
+    //return this._setPages(viewControllers, opts, done);
+    return Promise.reject(new Error('Need to implement'));
   }
 
   setPages(pages: any[], opts?: NavOptions, done?: Function): Promise<any> {
-    const viewControllers = convertToViews(this._linker, pages);
+    /*const viewControllers = convertToViews(this._linker, pages);
     return this._setPages(viewControllers, opts, done);
+    */
+    return Promise.reject(new Error('Need to implement'));
   }
 
   _setPages(viewControllers: ViewController[], opts?: NavOptions, done?: Function): Promise<any> {
@@ -729,11 +749,12 @@ export class NavControllerBase extends Ion implements NavController {
       // it's safe to enable the app again
       this._app.setEnabled(true);
 
-      if (opts.updateUrl !== false) {
+      /*if (opts.updateUrl !== false) {
         // notify deep linker of the nav change
         // if a direction was provided and should update url
         this._linker.navChange(opts.direction);
       }
+      */
 
       if (opts.keyboardClose !== false) {
         // the keyboard is still open!

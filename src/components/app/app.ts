@@ -229,7 +229,8 @@ export class App {
       ev: opts.ev
     });
 
-    return portal.insertPages(-1, [enteringView], opts);
+    return Promise.reject(new Error('present: Not implemented yet'));
+    //return portal.insertPages(-1, [enteringView], opts);
   }
 
   /**

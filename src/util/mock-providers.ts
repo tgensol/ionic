@@ -24,6 +24,8 @@ import { UrlSerializer } from '../navigation/url-serializer';
 import { ViewController } from '../navigation/view-controller';
 import { ViewState, DeepLinkConfig } from '../navigation/nav-util';
 
+import { ModuleLoader } from './module-loader';
+
 
 export function mockConfig(config?: any, url: string = '/', platform?: Platform) {
   const c = new Config();
@@ -365,7 +367,12 @@ export function mockDeepLinker(linkConfig: DeepLinkConfig = null, app?: App) {
 
   let location = mockLocation();
 
-  return new DeepLinker(app || mockApp(), serializer, location);
+  return new DeepLinker(app || mockApp(), serializer, location, linkConfig, mockModuleLoader());
+}
+
+export function mockModuleLoader() {
+  let moduleLoader = new ModuleLoader(null, null);
+  return moduleLoader;
 }
 
 export function mockNavController(): NavControllerBase {
@@ -394,7 +401,8 @@ export function mockNavController(): NavControllerBase {
     gestureCtrl,
     trnsCtrl,
     linker,
-    dom
+    dom,
+    mockModuleLoader()
   );
 
   nav._viewInit = function(enteringView: ViewController) {
@@ -424,7 +432,7 @@ export function mockOverlayPortal(app: App, config: Config, plt: MockPlatform): 
   let gestureCtrl = new GestureController(app);
   let serializer = new UrlSerializer(null);
   let location = mockLocation();
-  let deepLinker = new DeepLinker(app, serializer, location);
+  let deepLinker = new DeepLinker(app, serializer, location, null, mockModuleLoader());
 
   return new OverlayPortal(
     app,
@@ -439,7 +447,8 @@ export function mockOverlayPortal(app: App, config: Config, plt: MockPlatform): 
     null,
     deepLinker,
     null,
-    dom
+    dom,
+    mockModuleLoader()
   );
 }
 
@@ -471,7 +480,8 @@ export function mockTab(parentTabs: Tabs): Tab {
     gestureCtrl,
     null,
     linker,
-    dom
+    dom,
+    mockModuleLoader()
   );
 
   tab.load = (opts: any, cb: Function) => {
