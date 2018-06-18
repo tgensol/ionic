@@ -1,5 +1,4 @@
-import { Subject } from 'rxjs/Subject';
-
+import { Subject } from 'rxjs';
 import { assert } from './util';
 import { DomController, DomCallback } from '../platform/dom-controller';
 import { Platform, EventListenerOptions } from '../platform/platform';
@@ -22,7 +21,7 @@ export class ScrollView {
   private _endTmr: Function;
 
 
-  constructor(private _plt: Platform, private _dom: DomController) {
+  constructor (private _plt: Platform, private _dom: DomController) {
     this.ev = {
       timeStamp: 0,
       scrollTop: 0,
@@ -41,13 +40,13 @@ export class ScrollView {
       velocityX: 0,
       directionY: 'down',
       directionX: null,
-      domWrite: function(fn: DomCallback, ctx?: any): void {
+      domWrite: function (fn: DomCallback, ctx?: any): void {
         _dom.write(fn, ctx);
       }
     };
   }
 
-  init(ele: HTMLElement, contentTop: number, contentBottom: number) {
+  init (ele: HTMLElement, contentTop: number, contentBottom: number) {
     if (!this.initialized) {
       this.initialized = true;
 
@@ -62,7 +61,7 @@ export class ScrollView {
     }
   }
 
-  private enableNativeScrolling() {
+  private enableNativeScrolling () {
     this._js = false;
     if (!this._el) {
       return;
@@ -74,7 +73,7 @@ export class ScrollView {
     const ev = self.ev;
     const positions: number[] = [];
 
-    function scrollCallback(scrollEvent: UIEvent) {
+    function scrollCallback (scrollEvent: UIEvent) {
       ev.timeStamp = scrollEvent.timeStamp;
 
       // get the current scrollTop
@@ -135,7 +134,7 @@ export class ScrollView {
         }
       }
 
-      function scrollEnd() {
+      function scrollEnd () {
         // haven't scrolled in a while, so it's a scrollend
         self.isScrolling = false;
 
@@ -177,7 +176,7 @@ export class ScrollView {
    * inertia then this can be burned to the ground. iOS's more modern
    * WKWebView does not have this issue, only UIWebView does.
    */
-  enableJsScroll(contentTop: number, contentBottom: number) {
+  enableJsScroll (contentTop: number, contentBottom: number) {
     const self = this;
     self._js = true;
     const ele = self._el;
@@ -193,14 +192,14 @@ export class ScrollView {
     let rafCancel: Function;
     let max: number;
 
-    function setMax() {
+    function setMax () {
       if (!max) {
         // ******** DOM READ ****************
         max = ele.scrollHeight - ele.parentElement.offsetHeight + contentTop + contentBottom;
       }
     };
 
-    function jsScrollDecelerate(timeStamp: number) {
+    function jsScrollDecelerate (timeStamp: number) {
       ev.timeStamp = timeStamp;
 
       console.debug(`scroll-view, decelerate, velocity: ${ev.velocityY}`);
@@ -242,14 +241,14 @@ export class ScrollView {
       }
     }
 
-    function jsScrollTouchStart(touchEvent: TouchEvent) {
+    function jsScrollTouchStart (touchEvent: TouchEvent) {
       positions.length = 0;
       max = null;
       self._dom.cancel(rafCancel);
       positions.push(pointerCoord(touchEvent).y, touchEvent.timeStamp);
     }
 
-    function jsScrollTouchMove(touchEvent: TouchEvent) {
+    function jsScrollTouchMove (touchEvent: TouchEvent) {
       if (!positions.length) {
         return;
       }
@@ -284,7 +283,7 @@ export class ScrollView {
       });
     }
 
-    function jsScrollTouchEnd(touchEvent: TouchEvent) {
+    function jsScrollTouchEnd (touchEvent: TouchEvent) {
       // figure out what the scroll position was about 100ms ago
       self._dom.cancel(rafCancel);
 
@@ -358,7 +357,7 @@ export class ScrollView {
   /**
    * DOM READ
    */
-  getTop() {
+  getTop () {
     if (this._js) {
       return this._t;
     }
@@ -368,7 +367,7 @@ export class ScrollView {
   /**
    * DOM READ
    */
-  getLeft() {
+  getLeft () {
     if (this._js) {
       return 0;
     }
@@ -378,7 +377,7 @@ export class ScrollView {
   /**
    * DOM WRITE
    */
-  setTop(top: number) {
+  setTop (top: number) {
     this._t = top;
 
     if (this._js) {
@@ -392,7 +391,7 @@ export class ScrollView {
   /**
    * DOM WRITE
    */
-  setLeft(left: number) {
+  setLeft (left: number) {
     this._l = left;
 
     if (this._js) {
@@ -403,7 +402,7 @@ export class ScrollView {
     }
   }
 
-  scrollTo(x: number, y: number, duration: number, done?: Function): Promise<any> {
+  scrollTo (x: number, y: number, duration: number, done?: Function): Promise<any> {
     // scroll animation loop w/ easing
     // credit https://gist.github.com/dezinezync/5487119
 
@@ -435,14 +434,14 @@ export class ScrollView {
     const fromX = el.scrollLeft;
 
     const maxAttempts = (duration / 16) + 100;
-    const transform =  self._plt.Css.transform;
+    const transform = self._plt.Css.transform;
 
     let startTime: number;
     let attempts = 0;
     let stopScroll = false;
 
     // scroll loop
-    function step(timeStamp: number) {
+    function step (timeStamp: number) {
       attempts++;
 
       if (!self._el || stopScroll || attempts > maxAttempts) {
@@ -491,11 +490,11 @@ export class ScrollView {
     return promise;
   }
 
-  scrollToTop(duration: number): Promise<any> {
+  scrollToTop (duration: number): Promise<any> {
     return this.scrollTo(0, 0, duration);
   }
 
-  scrollToBottom(duration: number): Promise<any> {
+  scrollToBottom (duration: number): Promise<any> {
     let y = 0;
     if (this._el) {
       y = this._el.scrollHeight - this._el.clientHeight;
@@ -503,14 +502,14 @@ export class ScrollView {
     return this.scrollTo(0, y, duration);
   }
 
-  stop() {
+  stop () {
     this.isScrolling = false;
   }
 
   /**
    * @private
    */
-  destroy() {
+  destroy () {
     this.stop();
 
     this._endTmr && this._dom.cancel(this._endTmr);
@@ -546,7 +545,7 @@ export interface ScrollEvent {
   velocityX: number;
   directionY: string;
   directionX: string;
-  domWrite: {(fn: DomCallback, ctx?: any): void};
+  domWrite: { (fn: DomCallback, ctx?: any): void };
   contentElement?: HTMLElement;
   fixedElement?: HTMLElement;
   scrollElement?: HTMLElement;
